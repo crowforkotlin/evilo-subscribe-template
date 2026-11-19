@@ -16,6 +16,7 @@ plugin repository that removes a release or changes a description is reflected
 on the next build without any manual editing here.
 """
 
+import copy
 import hashlib
 import json
 import os
@@ -80,25 +81,19 @@ def fetch_json(url):
 
 
 def plugin_record(url, plugin):
-    """Reduce one catalog plugin to what a list row needs, plus where to fetch more."""
+    """Keep the plugin entry a catalog would publish, narrowed to its newest release.
+
+    The entry is passed through unchanged apart from the release list, so the app applies
+    the same defaults to an indexed plugin as to a published one. Carrying that newest
+    release is what lets a subscriber install without fetching every plugin catalog.
+    """
     versions = plugin.get("availableVersions") or []
     if not versions:
         fail(f"{url} plugin {plugin.get('id')} lists no versions")
-    latest = max(versions, key=lambda release: int(release.get("versionCode", 0)))
-    authors = []
-    for author in plugin.get("authors") or []:
-        authors.append(author if isinstance(author, str) else author.get("name", ""))
-    return {
-        "catalogUrl": url,
-        "publishedAt": latest.get("publishedAt", ""),
-        "id": plugin.get("id", ""),
-        "name": plugin.get("name", ""),
-        "version": latest.get("version", ""),
-        "versionCode": int(latest.get("versionCode", 0)),
-        "iconUrl": plugin.get("iconUrl", ""),
-        "authors": [name for name in authors if name],
-        "description": plugin.get("description", ""),
-    }
+    newest = max(versions, key=lambda release: int(release.get("versionCode", 0)))
+    entry = copy.deepcopy(plugin)
+    entry["availableVersions"] = [newest]
+    return {"catalogUrl": url, "plugin": entry}
 
 
 def build_index(sources):
@@ -111,17 +106,16 @@ def build_index(sources):
             fail(f"{url} is not a plugin catalog: it declares no plugins list")
         for plugin in plugins:
             record = plugin_record(url, plugin)
-            if not record["id"]:
+            plugin_id = record["plugin"].get("id")
+            if not plugin_id:
                 fail(f"{url} contains a plugin without an id")
-            previous = seen.get(record["id"])
+            previous = seen.get(plugin_id)
             if previous is not None:
-                fail(f"plugin id {record['id']} appears in both {previous} and {url}; an id must have one publisher")
-            seen[record["id"]] = url
+                fail(f"plugin id {plugin_id} appears in both {previous} and {url}; an id must have one publisher")
+            seen[plugin_id] = url
             records.append(record)
-    records.sort(key=lambda record: record["id"])
+    records.sort(key=lambda record: record["plugin"]["id"])
     updated_at = os.environ.get("EVILO_SUBSCRIBE_UPDATED_AT") or newest_publication(records)
-    for record in records:
-        record.pop("publishedAt", None)
     collection = json.loads(COLLECTION.read_text(encoding="utf-8"))
     return {
         "schemaVersion": SCHEMA_VERSION,
@@ -133,7 +127,12 @@ def build_index(sources):
 
 def newest_publication(records):
     """The newest release date seen, so the field reflects the source data, not the clock."""
-    dates = [record["publishedAt"] for record in records if record.get("publishedAt")]
+    dates = [
+        release.get("publishedAt", "")
+        for record in records
+        for release in record["plugin"]["availableVersions"]
+        if release.get("publishedAt")
+    ]
     if not dates:
         return "1970-01-01T00:00:00Z"
     newest = max(dates)
