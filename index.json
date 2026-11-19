@@ -1,6 +1,19 @@
 {
   "name": "Awesome evilo plugins",
-  "plugins": [],
+  "plugins": [
+    {
+      "authors": [
+        "evilo contributors"
+      ],
+      "catalogUrl": "https://raw.githubusercontent.com/crowforkotlin/evilo-plugin-copymanga/main/catalog.json",
+      "description": "CopyManga search and catalog with metadata, mirror-served details, chapter groups and ordered image pages. Short pages advance by returned counts; available mirrors are retried for HTTP and empty-payload failures.",
+      "iconUrl": "https://raw.githubusercontent.com/crowforkotlin/evilo-plugin-copymanga/package-v1.0.0/releases/1.0.0/icon.png",
+      "id": "crow.evilo.source.copymanga",
+      "name": "CopyManga",
+      "version": "1.0.0",
+      "versionCode": 1
+    }
+  ],
   "schemaVersion": 1,
-  "updatedAt": "1970-01-01T00:00:00Z"
+  "updatedAt": "2026-11-19T00:00:00Z"
 }
