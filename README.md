@@ -27,7 +27,7 @@ Those two files are the whole input. Everything else is generated.
 
 | File | Contents |
 | --- | --- |
-| `index.json` | Every plugin of every listed repository: `id`, `name`, `version`, `versionCode`, `iconUrl`, `authors`, `description`, `catalogUrl` |
+| `index.json` | Every plugin of every listed repository as its catalog entry, narrowed to the newest release, plus that plugin's `catalogUrl` |
 | `index.json.sig` | Ed25519 signature over the exact `index.json` bytes, lowercase hex |
 | `index.json.pub` | The signing public key, so a subscriber can re-derive the fingerprint |
 | `repo.json` | The pointer users subscribe to: `indexUrl`, `signingKeyFingerprint`, `keyId` |
@@ -42,6 +42,8 @@ A collection of URLs alone costs one HTTP request per repository. One thousand
 repositories would mean one thousand requests before the user sees anything.
 
 With an index, the user's app makes two requests: `repo.json`, then `index.json`.
+Each entry carries the newest release, so installing from the index needs no further
+request; an older version is read from the plugin's own catalog through `catalogUrl`.
 The index is one document, measured at about 620 bytes per plugin, so ten thousand
 plugins fit in the 10 MiB the app accepts.
 
