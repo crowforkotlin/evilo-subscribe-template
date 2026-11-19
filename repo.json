@@ -1,0 +1,6 @@
+{
+  "indexUrl": "https://raw.githubusercontent.com/crowforkotlin/evilo-subscribe-template/main/index.json",
+  "keyId": "subscription",
+  "name": "Awesome evilo plugins",
+  "signingKeyFingerprint": "46ac17d82cd55293329fb457e5afa7f88832449c4ae7e7ce06baa3db04140873"
+}
