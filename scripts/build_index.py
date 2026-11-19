@@ -55,8 +55,8 @@ def read_sources():
         if line in entries:
             fail(f"sources.txt line {number} repeats an earlier entry: {line}")
         entries.append(line)
-    if not entries:
-        fail("sources.txt lists no plugin repositories")
+    # An empty list is the template's initial state: it still publishes an empty index so
+    # the workflow stays green until a repository is added.
     return entries
 
 

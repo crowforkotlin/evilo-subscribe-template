@@ -45,6 +45,9 @@ jobs:
           print("signer matches RFC 8032 vector 1")
           PY
 
+      - name: Run the build tests
+        run: python3 -m unittest discover -s scripts -p 'test_*.py'
+
       - name: Build and sign the index
         env:
           EVILO_SUBSCRIBE_KEY_HEX: ${{ secrets.EVILO_SUBSCRIBE_KEY_HEX }}
