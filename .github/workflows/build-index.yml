@@ -58,8 +58,8 @@ jobs:
       - name: Publish the index and its pointer
         run: |
           set -euo pipefail
-          git config user.name 'evilo subscribe'
-          git config user.email 'subscribe@users.noreply.github.com'
+          git config user.name 'crowforkotlin'
+          git config user.email 'crowforkotlin@gmail.com'
           git add index.json index.json.sig index.json.pub repo.json
           if git diff --cached --quiet; then
             echo 'Index unchanged; nothing to publish.'
