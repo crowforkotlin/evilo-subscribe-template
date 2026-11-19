@@ -1,0 +1,5 @@
+{
+  "name": "Awesome evilo plugins",
+  "indexUrl": "https://raw.githubusercontent.com/crowforkotlin/evilo-subscribe-template/main/index.json",
+  "keyId": "subscription"
+}
