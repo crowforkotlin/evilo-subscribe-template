@@ -7,5 +7,4 @@
 # automatically. The workflow fetches every catalog, merges the plugin records,
 # signs the index, and commits index.json, index.sig, and repo.json.
 
-# https://raw.githubusercontent.com/alice/alice-plugin/main/catalog.json
-# https://raw.githubusercontent.com/bob/bob-plugin/main/catalog.json
+https://raw.githubusercontent.com/crowforkotlin/evilo-plugin-copymanga/main/catalog.json
